@@ -9,7 +9,8 @@ Very simple Java project that:
 I think it's neat because `mvn package` will actually build the JAR into a
 Java 12 Docker image (see Dockerfile) where ImageMagick is patiently waiting.
 
-You should think this is neat because some dependencies are super painful. Like, who tarballs and `makes` shit still?
+You should think this is neat because some dependencies are super painful. 
+Like, who tarballs and `makes` shit still? Also that pom file is kind of magical.
 
 The Java code probably sucks. I have a lot to catch up on.
 
