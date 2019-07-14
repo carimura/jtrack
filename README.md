@@ -15,10 +15,12 @@ Like, who tarballs and `makes` shit still? Also that pom file is kind of magical
 
 The Java code probably sucks. I have a lot to catch up on.
 
-Don't judge me.
+Don't judge me. 
+
+Result should look like the following beautiful family:
+
+![The Result](https://raw.githubusercontent.com/carimura/jimage/master/result.jpg)
+
 
 Update: actually using openjdk:9 until I figure out why the opencv maven repo 
-doesn't like 10+. 
-
-
-
+doesn't like 10+.
