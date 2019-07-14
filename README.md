@@ -3,9 +3,9 @@
 Very simple Java project that:
 
 1. Gets file from Oracle cloud object storage
-2a. Rotates using ImageMagick (by way of im4java)
-2b. Does facial recognition using OpenCV and boxes the faces
-3. Puts the file back to object store
+2. Rotates using ImageMagick (by way of im4java)
+3. or... Does facial recognition using OpenCV and boxes the faces
+4. Puts the file back to object store
 
 I think it's neat because `mvn package` will actually build the JAR into a
 Java 12 Docker image (see Dockerfile) where ImageMagick is patiently waiting.
