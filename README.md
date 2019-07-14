@@ -3,7 +3,8 @@
 Very simple Java project that:
 
 1. Gets file from Oracle cloud object storage
-2. Rotates using ImageMagick (by way of im4java)
+2a. Rotates using ImageMagick (by way of im4java)
+2b. Does facial recognition using OpenCV and boxes the faces
 3. Puts the file back to object store
 
 I think it's neat because `mvn package` will actually build the JAR into a
@@ -14,7 +15,10 @@ Like, who tarballs and `makes` shit still? Also that pom file is kind of magical
 
 The Java code probably sucks. I have a lot to catch up on.
 
-Don't judge me. Or do. Whatever.
+Don't judge me.
+
+Update: actually using openjdk:9 until I figure out why the opencv maven repo 
+doesn't like 10+. 
 
 
 
