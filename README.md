@@ -19,7 +19,7 @@ Don't judge me.
 
 Result should look like the following beautiful family:
 
-![The Result](https://raw.githubusercontent.com/carimura/jimage/master/result.jpg)
+![The Result](https://raw.githubusercontent.com/carimura/jimage/master/result.jpg | width=300)
 
 
 Update: actually using openjdk:9 until I figure out why the opencv maven repo 
