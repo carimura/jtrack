@@ -22,4 +22,5 @@ Result should look like the following beautiful family:
 <img src="https://raw.githubusercontent.com/carimura/jimage/master/result.jpg" width=400/> <br />
 
 Update: actually using openjdk:9 until I figure out why the opencv maven repo 
-doesn't like 10+.
+doesn't like 10+. See https://github.com/openpnp/opencv/issues/44.
+
