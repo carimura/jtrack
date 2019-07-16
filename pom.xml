@@ -44,7 +44,11 @@
       <artifactId>javacv-platform</artifactId>
       <version>1.5.1</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.bytedeco</groupId>
+      <artifactId>javacpp</artifactId>
+      <version>1.5.1</version>
+    </dependency>
 
     <!-- all this stuff to avoid all these erroneous log warnings -->
     <dependency>
