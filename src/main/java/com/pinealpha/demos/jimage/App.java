@@ -44,7 +44,7 @@ public class App {
 
     Mat image = Imgcodecs.imread(FILEPATH + "face.jpg");
 
-    MatOfRect faces = detectFace(image);
+    MatOfRect faces = detectFaces(image);
 
     drawBoxes(image, faces);
 
@@ -55,7 +55,7 @@ public class App {
     System.out.println("--------// Ending Jimage --------");
   }
 
-  private static MatOfRect detectFace(Mat image) {
+  private static MatOfRect detectFaces(Mat image) {
     CascadeClassifier faceCascade = new CascadeClassifier();
     faceCascade.load(FILEPATH + "haarcascade_frontalface_alt.xml");
 
@@ -70,7 +70,7 @@ public class App {
     for (Rect rect : faces.toArray()) {
       Imgproc.rectangle(image, new Point(rect.x, rect.y),
           new Point(rect.x + rect.width, rect.y + rect.height),
-          new Scalar(255, 125, 0), 2);
+          new Scalar(255, 0, 0), 2);
     }
   }
 
