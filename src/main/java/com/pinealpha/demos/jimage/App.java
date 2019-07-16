@@ -70,7 +70,7 @@ public class App {
     for (Rect rect : faces.toArray()) {
       Imgproc.rectangle(image, new Point(rect.x, rect.y),
           new Point(rect.x + rect.width, rect.y + rect.height),
-          new Scalar(255, 0, 0), 2);
+          new Scalar(0, 255, 0), 2);
     }
   }
 
