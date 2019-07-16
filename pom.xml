@@ -6,7 +6,7 @@
 
   <groupId>com.pinealpha.demos.jimage</groupId>
   <artifactId>jimage</artifactId>
-  <version>0.2</version>
+  <version>0.3</version>
 
   <name>jimage</name>
   <url>http://www.pinealpha.com</url>
@@ -40,9 +40,9 @@
     </dependency>
 
     <dependency>
-      <groupId>org.openpnp</groupId>
-      <artifactId>opencv</artifactId>
-      <version>3.4.2-1</version>
+      <groupId>org.bytedeco</groupId>
+      <artifactId>javacv-platform</artifactId>
+      <version>1.5.1</version>
     </dependency>
 
 
