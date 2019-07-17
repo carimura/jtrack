@@ -1,23 +1,17 @@
 package com.pinealpha.demos.jimage;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.FileOutputStream;
-import java.io.File;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import com.oracle.bmc.objectstorage.ObjectStorage;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.requests.PutObjectRequest;
 import com.oracle.bmc.objectstorage.requests.GetObjectRequest;
 import com.oracle.bmc.objectstorage.responses.PutObjectResponse;
-import com.oracle.bmc.objectstorage.responses.GetObjectResponse;
 
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Point;
@@ -34,32 +28,34 @@ public class App {
   private static final String BUCKETIN = "jimage-in";
   private static final String BUCKETOUT = "jimage-out";
   private static final String OCICONFIG = FILEPATH + "config";
-  private static final String COMPARTMENT = "oracle-serverless-devrel";
+  private static final String TENANCY = "oracle-serverless-devrel";
 
   public static void main(String[] args) throws Exception {
     System.out.println("-------- Starting Jimage --------");
-    ConfigFileAuthenticationDetailsProvider provider = new ConfigFileAuthenticationDetailsProvider(OCICONFIG, "DEFAULT");
-    ObjectStorageClient osclient = new ObjectStorageClient(provider);
     nu.pattern.OpenCV.loadLocally();
+    var provider = new ConfigFileAuthenticationDetailsProvider(OCICONFIG, "DEFAULT");
+    var osclient = new ObjectStorageClient(provider);
 
-    Mat image = Imgcodecs.imread(FILEPATH + "face.jpg");
+    String imageNameIn = "face.jpg";
+    String imageNameOut = "output.jpg";
 
-    MatOfRect faces = detectFaces(image);
+    Mat img = Imgcodecs.imread(FILEPATH + imageNameIn);
+    MatOfRect faces = detectFaces(img);
+    drawBoxes(img, faces);
+    Imgcodecs.imwrite(FILEPATH + imageNameOut, img);
 
-    drawBoxes(image, faces);
-
-    Imgcodecs.imwrite(FILEPATH + "output.jpg", image);
-
-    putImageOnOCI(FILEPATH + "output.jpg", osclient);
+    PostToSlack.post(FILEPATH + imageNameOut);
 
     System.out.println("--------// Ending Jimage --------");
   }
 
+
+
   private static MatOfRect detectFaces(Mat image) {
-    CascadeClassifier faceCascade = new CascadeClassifier();
+    var faceCascade = new CascadeClassifier();
     faceCascade.load(FILEPATH + "haarcascade_frontalface_alt.xml");
 
-    MatOfRect faces = new MatOfRect();
+    var faces = new MatOfRect();
 
     faceCascade.detectMultiScale(image, faces);
 
@@ -76,20 +72,15 @@ public class App {
 
 
   private static void getImageFromOCI(String fileIn, ObjectStorage osclient) throws Exception {
-    GetObjectRequest gor = GetObjectRequest.builder()
-        .namespaceName(COMPARTMENT)
-        .bucketName(BUCKETIN)
-        .objectName(fileIn)
-        .build();
-    GetObjectResponse goResp = osclient.getObject(
+    var goResp = osclient.getObject(
         GetObjectRequest.builder()
-            .namespaceName(COMPARTMENT)
+            .namespaceName(TENANCY)
             .bucketName(BUCKETIN)
             .objectName(fileIn)
             .build());
     try (InputStream inputStream = goResp.getInputStream()) {
-      File file = new File(FILEPATH + fileIn);
-      try (FileOutputStream outputStream = new FileOutputStream(file)) {
+      var file = new File(FILEPATH + fileIn);
+      try (var outputStream = new FileOutputStream(file)) {
 
         int read;
         byte[] bytes = new byte[1024];
@@ -105,13 +96,13 @@ public class App {
     }
   }
 
-  private static void putImageOnOCI(String file, ObjectStorage osclient) throws Exception {
-    Path path = Paths.get(file);
+  private static void putImageOnOCI(String imageNameOut, ObjectStorage osclient) throws Exception {
+    Path path = Paths.get(FILEPATH + imageNameOut);
     byte[] data = Files.readAllBytes(path);
-    PutObjectRequest por = PutObjectRequest.builder()
-        .namespaceName(COMPARTMENT)
+    var por = PutObjectRequest.builder()
+        .namespaceName(TENANCY)
         .bucketName(BUCKETOUT)
-        .objectName("output.jpg")
+        .objectName(imageNameOut)
         .putObjectBody(new ByteArrayInputStream(data))
         .build();
     PutObjectResponse poResp = osclient.putObject(por);
