@@ -1,16 +1,7 @@
 package com.pinealpha.demos.jimage;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
-import com.oracle.bmc.objectstorage.ObjectStorage;
-import com.oracle.bmc.objectstorage.ObjectStorageClient;
-import com.oracle.bmc.objectstorage.requests.PutObjectRequest;
-import com.oracle.bmc.objectstorage.requests.GetObjectRequest;
-import com.oracle.bmc.objectstorage.responses.PutObjectResponse;
+import java.io.File;
+import java.util.ArrayList;
 
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
@@ -21,34 +12,46 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.objdetect.CascadeClassifier;
 
+import java.awt.image.BufferedImage;
+import java.net.URL;
+import javax.imageio.ImageIO;
+
 
 public class App {
 
   private static final String FILEPATH = "/usr/share/jimage/";
-  private static final String BUCKETIN = "jimage-in";
-  private static final String BUCKETOUT = "jimage-out";
-  private static final String OCICONFIG = FILEPATH + "config";
-  private static final String TENANCY = "oracle-serverless-devrel";
 
   public static void main(String[] args) throws Exception {
     System.out.println("-------- Starting Jimage --------");
     nu.pattern.OpenCV.loadLocally();
-    var provider = new ConfigFileAuthenticationDetailsProvider(OCICONFIG, "DEFAULT");
-    var osclient = new ObjectStorageClient(provider);
 
-    String imageNameIn = "face.jpg";
     String imageNameOut = "output.jpg";
 
-    Mat img = Imgcodecs.imread(FILEPATH + imageNameIn);
-    MatOfRect faces = detectFaces(img);
-    drawBoxes(img, faces);
-    Imgcodecs.imwrite(FILEPATH + imageNameOut, img);
+    String query = System.getenv("QUERY") == "" ? "boom" : System.getenv("QUERY");
 
-    PostToSlack.post(FILEPATH + imageNameOut);
+    System.out.println("USING QUERY --> " + query);
+
+    ArrayList<String> images = Services.getImagesFromGiphy(query, 5);
+
+    for (String imgID : images) {
+      var usableURL = "https://i.giphy.com/media/" + imgID + "/480w_s.jpg";
+      System.out.println("Trying usableURL --> " + usableURL);
+      URL url = new URL(usableURL);
+      BufferedImage image = ImageIO.read(url);
+      try {
+        ImageIO.write(image, "jpg", new File(FILEPATH + "temp.jpg"));
+        Mat img = Imgcodecs.imread(FILEPATH + "temp.jpg");
+        MatOfRect faces = detectFaces(img);
+        drawBoxes(img, faces);
+        Imgcodecs.imwrite(FILEPATH + "output.jpg", img);
+        Services.postImageToSlack(FILEPATH + "output.jpg");
+      } catch (Exception e) {
+        System.out.println("*** COULDN'T FIND STILL IMAGE FOR " + usableURL + " ***");
+      }
+    }
 
     System.out.println("--------// Ending Jimage --------");
   }
-
 
 
   private static MatOfRect detectFaces(Mat image) {
@@ -68,45 +71,6 @@ public class App {
           new Point(rect.x + rect.width, rect.y + rect.height),
           new Scalar(0, 255, 0), 2);
     }
-  }
-
-
-  private static void getImageFromOCI(String fileIn, ObjectStorage osclient) throws Exception {
-    var goResp = osclient.getObject(
-        GetObjectRequest.builder()
-            .namespaceName(TENANCY)
-            .bucketName(BUCKETIN)
-            .objectName(fileIn)
-            .build());
-    try (InputStream inputStream = goResp.getInputStream()) {
-      var file = new File(FILEPATH + fileIn);
-      try (var outputStream = new FileOutputStream(file)) {
-
-        int read;
-        byte[] bytes = new byte[1024];
-
-        while ((read = inputStream.read(bytes)) != -1) {
-          outputStream.write(bytes, 0, read);
-        }
-        // maybe later: commons-io
-        //IOUtils.copy(inputStream, outputStream);
-      }
-
-      System.err.println("Successfully submitted GET object request -- Request ID: " + goResp.getOpcRequestId());
-    }
-  }
-
-  private static void putImageOnOCI(String imageNameOut, ObjectStorage osclient) throws Exception {
-    Path path = Paths.get(FILEPATH + imageNameOut);
-    byte[] data = Files.readAllBytes(path);
-    var por = PutObjectRequest.builder()
-        .namespaceName(TENANCY)
-        .bucketName(BUCKETOUT)
-        .objectName(imageNameOut)
-        .putObjectBody(new ByteArrayInputStream(data))
-        .build();
-    PutObjectResponse poResp = osclient.putObject(por);
-    System.err.println("Successfully submitted PUT object request -- Request ID: " + poResp.getOpcRequestId());
   }
 
 }

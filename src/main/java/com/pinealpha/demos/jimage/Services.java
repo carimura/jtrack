@@ -2,13 +2,18 @@ package com.pinealpha.demos.jimage;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import okhttp3.*;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.concurrent.TimeUnit;
 
-public class PostToSlack {
+import okhttp3.*;
+import java.io.*;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+import java.util.Random;
+
+import org.json.JSONObject;
+import org.json.JSONArray;
+
+public class Services {
   private static OkHttpClient client = new OkHttpClient.Builder().readTimeout(60, TimeUnit.SECONDS).build();
 
   private static ObjectMapper objectMapper = new ObjectMapper();
@@ -37,14 +42,12 @@ public class PostToSlack {
     public String error;
   }
 
-  public static void post(String imagePath) throws Exception {
-    System.out.println("Posting to Slack");
-
-    String token = System.getenv("SLACK_TOKEN");
+  public static void postImageToSlack(String imagePath) throws Exception {
+    var token = System.getenv("SLACK_TOKEN");
 
     byte[] data = Files.readAllBytes(new File(imagePath).toPath());
 
-    RequestBody requestBody = new MultipartBody.Builder()
+    var requestBody = new MultipartBody.Builder()
         .setType(MultipartBody.FORM)
         .addFormDataPart("token", token)
         .addFormDataPart("channels", "demostream")
@@ -63,16 +66,35 @@ public class PostToSlack {
     sendRequest(r);
   }
 
+
+  public static void postImageToSlackFromURL(String url) throws Exception {
+    var token = System.getenv("SLACK_TOKEN");
+
+    var requestBody = new MultipartBody.Builder()
+        .setType(MultipartBody.FORM)
+        .addFormDataPart("token", token)
+        .addFormDataPart("channel", "demostream")
+        .addFormDataPart("text", url)
+        .build();
+
+    Request r = new Request.Builder()
+        .url(new HttpUrl.Builder()
+            .scheme("https")
+            .host("slack.com")
+            .addPathSegments("api/chat.postMessage").build())
+        .post(requestBody)
+        .build();
+
+    sendRequest(r);
+  }
+
   private static void sendRequest(Request request) throws IOException {
-    System.err.println("Sending" + request);
     Response res = client.newCall(request).execute();
-    System.err.println("Got response " + res);
     if (!res.isSuccessful()) {
       throw new RuntimeException("Invalid response : " + res.toString());
     }
 
     String result = res.body().string();
-    System.err.println("Got result" + result);
     SlackResponse sm = objectMapper.readValue(result, SlackResponse.class);
     if (!sm.ok) {
       throw new RuntimeException("Error from slack API :" + sm.error);
@@ -80,6 +102,40 @@ public class PostToSlack {
     res.close();
     client.dispatcher().executorService().shutdown();
     client.connectionPool().evictAll();
+  }
+
+
+  public static ArrayList<String> getImagesFromGiphy(String query, int num) throws Exception {
+    var token = System.getenv("GIPHY_TOKEN");
+    Random rand = new Random();
+    int offset = rand.nextInt(10);
+
+    var request = new Request.Builder()
+        .url("http://api.giphy.com/v1/gifs/search?q=" + query + "&api_key=" + token + "&limit=" + num + "&offset=" + offset)
+        .build();
+
+    var respString = "";
+    try (Response response = client.newCall(request).execute()) {
+      if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+      respString = response.body().string();
+    }
+
+    JSONObject results = new JSONObject(respString);
+
+    JSONArray ja = results.getJSONArray("data");
+
+    var images = new ArrayList<String>();
+
+    for (int i = 0; i < ja.length(); i++) {
+      var currentJo = ja.getJSONObject(i);
+      //System.out.println(currentJo.toString(2));
+      var imgURL = currentJo.getJSONObject("images").getJSONObject("480w_still").getString("url");
+      var imgID = currentJo.getString("id");
+
+      images.add(imgID);
+    }
+
+    return images;
   }
 
 }
