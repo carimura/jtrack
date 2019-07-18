@@ -18,13 +18,14 @@ public class App {
     System.out.println("-------- Starting Jimage --------");
     String query = System.getenv("QUERY") == "" ? "boom" : System.getenv("QUERY");
     int num = System.getenv("NUM") == "" ? 3 : Integer.parseInt(System.getenv("NUM"));
-    System.out.println("USING QUERY --> " + query);
+    System.out.println("QUERY --> " + query);
+    System.out.println("NUM --> " + num);
 
     ArrayList<String> images = Services.getImagesFromGiphy(query, num);
 
     for (String imgID : images) {
       var usableURL = "https://i.giphy.com/" + imgID + ".gif";
-      System.out.println("Trying usableURL --> " + usableURL);
+      System.out.println("usableURL --> " + usableURL);
 
       FileUtils.copyURLToFile(new URL(usableURL), new File(FILEPATH + "temp.gif"));
 

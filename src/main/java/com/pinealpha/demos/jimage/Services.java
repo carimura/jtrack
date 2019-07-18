@@ -108,7 +108,7 @@ public class Services {
   public static ArrayList<String> getImagesFromGiphy(String query, int num) throws Exception {
     var token = System.getenv("GIPHY_TOKEN");
     Random rand = new Random();
-    int offset = rand.nextInt(10);
+    int offset = rand.nextInt(20);
 
     var request = new Request.Builder()
         .url("http://api.giphy.com/v1/gifs/search?q=" + query + "&api_key=" + token + "&limit=" + num + "&offset=" + offset)
