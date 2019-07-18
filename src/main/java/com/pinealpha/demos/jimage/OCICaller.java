@@ -21,7 +21,7 @@ public class OCICaller {
   private static final String BUCKETOUT = "jimage-out";
   private static final String TENANCY = "oracle-serverless-devrel";
 
-  private static void getImageFromOCI(String filePath, String fileIn) throws Exception {
+  public static void getImageFromOCI(String filePath, String fileIn) throws Exception {
     var provider = new ConfigFileAuthenticationDetailsProvider(filePath + "config", "DEFAULT");
     var osclient = new ObjectStorageClient(provider);
     var goResp = osclient.getObject(
@@ -48,7 +48,9 @@ public class OCICaller {
     }
   }
 
-  private static void putImageOnOCI(String filePath, String imageNameOut, ObjectStorage osclient) throws Exception {
+  public static void putImageOnOCI(String filePath, String imageNameOut) throws Exception {
+    var provider = new ConfigFileAuthenticationDetailsProvider(filePath + "config", "DEFAULT");
+    var osclient = new ObjectStorageClient(provider);
     Path path = Paths.get(filePath + imageNameOut);
     byte[] data = Files.readAllBytes(path);
     var por = PutObjectRequest.builder()
