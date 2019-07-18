@@ -35,6 +35,6 @@ That's it.
 1. Reduce build time. Thanks to opencv jni lib dependency, takes about 3
    minutes.
 2. Possibly use a smaller version of the gif for faster processing.
-3. Use loom to paralellize image processing
+3. Use loom to parallelize image processing
 
 
