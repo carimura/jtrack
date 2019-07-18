@@ -32,6 +32,9 @@ That's it.
 
 ## Next Up
 
-1. Figure out how to get more reliable images… giphy is unreliable for that jpg still frame image.
-2. Reduce build time
-3. Stretch goal: Use animated gifs. REbuild with detection boxes.
+1. Reduce build time. Thanks to opencv jni lib dependency, takes about 3
+   minutes.
+2. Possibly use a smaller version of the gif for faster processing.
+3. Use loom to paralellize image processing
+
+

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import java.awt.image.BufferedImage;
 import java.net.URL;
-import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
 
 import org.apache.commons.io.FileUtils;
