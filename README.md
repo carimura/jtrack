@@ -18,7 +18,7 @@ You can also get images from Oracle object storage as well.
 
 Example of face detection: 
 
-<img src="https://raw.githubusercontent.com/carimura/jimage/master/result.gif" width=400/> <br />
+<img src="https://raw.githubusercontent.com/carimura/jimage/master/result.gif" /> <br />
 
 <img src="https://raw.githubusercontent.com/carimura/jimage/master/result.jpg" width=400/> <br />
 
