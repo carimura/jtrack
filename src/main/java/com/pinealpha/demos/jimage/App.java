@@ -1,6 +1,7 @@
 package com.pinealpha.demos.jimage;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 
 import java.awt.image.BufferedImage;
@@ -15,8 +16,8 @@ public class App {
 
   public static void main(String[] args) throws Exception {
     System.out.println("-------- Starting Jimage --------");
-    String query = System.getenv("QUERY") == "" ? "boom" : System.getenv("QUERY");
-    int num = System.getenv("NUM") == "" ? 3 : Integer.parseInt(System.getenv("NUM"));
+    String query = System.getenv("QUERY").equals("") ? "boom" : System.getenv("QUERY");
+    int num = System.getenv("NUM").equals("") ? 3 : Integer.parseInt(System.getenv("NUM"));
     System.out.println("QUERY --> " + query);
     System.out.println("NUM --> " + num);
 
@@ -26,26 +27,31 @@ public class App {
       var usableURL = "https://i.giphy.com/" + imgID + ".gif";
       System.out.println("usableURL --> " + usableURL);
 
-      FileUtils.copyURLToFile(new URL(usableURL), new File(FILEPATH + "temp.gif"));
+      File originalGIF = new File(FILEPATH + "temp.gif");
+      File finalGIF = new File(FILEPATH + "output.gif");
+      var outputStream = new FileImageOutputStream(finalGIF);
+      var inputStream = new FileInputStream(originalGIF);
+
+      FileUtils.copyURLToFile(new URL(usableURL), originalGIF);
 
       var gifDecoder = new GifDecoder();
-      var output = new FileImageOutputStream(new File(FILEPATH + "output.gif"));
-      var writer = new GifEncoder(output, BufferedImage.TYPE_INT_RGB, 0, true);
+
+      var writer = new GifEncoder(outputStream, BufferedImage.TYPE_INT_RGB, 0, true);
       FaceDetect faceDetect = new FaceDetect();
 
-      ArrayList<String> framePaths = gifDecoder.saveFramesFrom(FILEPATH + "temp.gif");
+      // note: Pair class is just a placeholder for origin GIF frame and its OpenCV Mat representation
+      ArrayList<Pair> mats = gifDecoder.framesToMat(inputStream);
 
-      for (String imgPath : framePaths) {
+      for (Pair matFrame: mats) {
         writer.writeToSequence(
-            faceDetect.processImage(framePaths.indexOf(imgPath), imgPath)
+                faceDetect.processImageFromMat(matFrame)
         );
       }
-      writer.close();
-      output.close();
-      gifDecoder.close();
-      faceDetect.cleanUp(framePaths.size());
 
-      Services.postImageToSlack(FILEPATH + "output.gif");
+      writer.close();
+      outputStream.close();
+
+      Services.postImageToSlack(finalGIF);
     }
 
     System.out.println("--------// Ending Jimage --------");
