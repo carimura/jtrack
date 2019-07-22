@@ -40,12 +40,11 @@ public class FaceDetect {
     }
 
     private CascadeClassifier setupClasifier() throws IOException {
-        URL url = new URL(
-                "https://raw.github.com/opencv/opencv/master/data/haarcascades/haarcascade_frontalface_alt.xml"
-        );
+        URL url = new URL("https://raw.github.com/opencv/opencv/master/data/haarcascades/haarcascade_frontalface_alt.xml");
         File file = Loader.cacheResource(url);
         String classifierName = file.getAbsolutePath();
         return new CascadeClassifier(classifierName);
+        //return new CascadeClassifier("/usr/share/jimage/haarcascade_frontalface_alt.xml");
     }
 
     public BufferedImage drawFaces(BufferedImage orig, RectVector faces) {
@@ -55,15 +54,11 @@ public class FaceDetect {
             return orig;
         }
 
-        BasicStroke basicStroke = new BasicStroke(10);
+        BasicStroke basicStroke = new BasicStroke(1.5f);
         for (int iface = 0; iface < nFaces; ++iface) {
             Rect rect = faces.get(iface);
-
             Graphics2D orig2D = orig.createGraphics();
-            orig2D.drawRect(
-                    rect.x(), rect.y(),
-                    rect.width(), rect.height()
-            );
+            orig2D.drawRect(rect.x(), rect.y(), rect.width(), rect.height());
             orig2D.setStroke(basicStroke);
             orig2D.dispose();
         }

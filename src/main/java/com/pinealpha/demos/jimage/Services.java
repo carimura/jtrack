@@ -13,9 +13,10 @@ import java.util.Random;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import org.apache.commons.lang3.time.StopWatch;
+
 public class Services {
   private static OkHttpClient client = new OkHttpClient.Builder().readTimeout(60, TimeUnit.SECONDS).build();
-
   private static ObjectMapper objectMapper = new ObjectMapper();
 
   public static class Upload {
@@ -132,7 +133,7 @@ public class Services {
     for (int i = 0; i < ja.length(); i++) {
       var currentJo = ja.getJSONObject(i);
       //System.out.println(currentJo.toString(2));
-      var imgURL = currentJo.getJSONObject("images").getJSONObject("480w_still").getString("url");
+      //var imgURL = currentJo.getJSONObject("images").getJSONObject("480w_still").getString("url");
       var imgID = currentJo.getString("id");
 
       images.add(imgID);

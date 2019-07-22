@@ -34,8 +34,9 @@ That's it.
 
 1. Reduce build time. Thanks to opencv jni lib dependency, takes about 3
    minutes.
-2. Possibly use a smaller version of the gif for faster processing.
+2. Possibly use a smaller version of the gif for faster processing. Current 
+   downsized version doesn't work in all cases.
 3. Use loom to parallelize image pull and image push. (opencv underlying C is
    single threaded)
-
-
+4. Post indicator of what's going on to Slack (while longer processing)
+5. stroke isn't working to set strokesize.
