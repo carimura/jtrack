@@ -25,7 +25,7 @@ Example of face detection:
 ## To Use
 
 1. Create a .env file with GIPHY_TOKEN and SLACK_TOKEN
-2. mvn clean build
+2. mvn clean package
 3. `docker run -e "QUERY=happy" -e "NUM=3" --env-file=.env <your_docker_name>/jimage:<version`
 
 That's it. 
