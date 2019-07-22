@@ -42,17 +42,20 @@ public class Services {
     public String error;
   }
 
-  public static void postImageToSlack(String imagePath) throws Exception {
+  public static void postImageToSlack(File gifToPost) throws Exception {
     var token = System.getenv("SLACK_TOKEN");
-
-    byte[] data = Files.readAllBytes(new File(imagePath).toPath());
+    var gifPath = gifToPost.toPath();
+    byte[] data = Files.readAllBytes(gifPath);
 
     var requestBody = new MultipartBody.Builder()
         .setType(MultipartBody.FORM)
         .addFormDataPart("token", token)
         .addFormDataPart("channels", "demostream")
         .addFormDataPart("title", "some image")
-        .addFormDataPart("file", imagePath, RequestBody.create(null, data))
+        .addFormDataPart(
+                "file",
+                gifPath.toString(),
+                RequestBody.create(null, data))
         .build();
 
     Request r = new Request.Builder()
