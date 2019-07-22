@@ -82,55 +82,15 @@
 
   <build>
     <plugins>
-      <!-- bundle in dependencies (ie im4java) //-->
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.1.1</version>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>com.pinealpha.demos.jimage.App</mainClass>
-            </manifest>
-          </archive>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-          <appendAssemblyId>true</appendAssemblyId> <!-- if false, get rid of append to jar filename -->
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
 
-
-      <!-- Docker build as part of package phase //-->
       <plugin>
-        <groupId>com.spotify</groupId>
-        <artifactId>dockerfile-maven-plugin</artifactId>
-        <version>1.4.10</version>
-        <executions>
-          <execution>
-            <id>default</id>
-            <goals>
-              <goal>build</goal>
-              <goal>push</goal>
-            </goals>
-          </execution>
-        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.0</version>
         <configuration>
-          <repository>carimura/jimage</repository>
-          <tag>${project.version}</tag>
-          <buildArgs>
-            <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
-          </buildArgs>
+          <release>12</release>
         </configuration>
       </plugin>
-
 
     </plugins>
 
