@@ -19,8 +19,11 @@ public class App {
     System.out.println("-------- Starting Jimage --------");
     String query = System.getenv("QUERY") == "" ? "boom" : System.getenv("QUERY");
     int num = System.getenv("NUM") == "" ? 3 : Integer.parseInt(System.getenv("NUM"));
+    Boolean previewImage = System.getenv("PREVIEW") == "" ? Boolean.FALSE : Boolean.parseBoolean(System.getenv("PREVIEW"));
     System.out.println("QUERY --> " + query);
     System.out.println("NUM --> " + num);
+    System.out.println("PREVIEW --> " + previewImage);
+
     var timer = StopWatch.createStarted();
 
     List<String> images = Services.getImagesFromGiphy(query, num);
@@ -28,8 +31,8 @@ public class App {
     //images = Arrays.asList("U6pavBhRsbNbPzrwWg", "5aLrlDiJPMPFS", "XbxZ41fWLeRECPsGIJ", "5GoVLqeAOo6PK", "nXxOjZrbnbRxS");
 
     for (String imgID : images) {
-      //var usableURL = "https://i.giphy.com/" + imgID + ".gif";
-      var usableURL = "https://i.giphy.com/media/" + imgID + "/giphy-downsized.gif";
+      var usableURL = previewImage ? "https://i.giphy.com/media/" + imgID + "/200.gif" : "https://i.giphy.com/" + imgID + ".gif";
+
       System.out.println("\nusableURL --> " + usableURL);
 
       File originalGIF = new File(FILEPATH + "temp.gif");

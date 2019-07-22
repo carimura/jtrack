@@ -24,19 +24,37 @@ Example of face detection:
 
 ## To Use
 
-1. Create a .env file with GIPHY_TOKEN and SLACK_TOKEN
-2. mvn clean package
-3. `docker run -e "QUERY=happy" -e "NUM=3" --env-file=.env <your_docker_name>/jimage:<version`
+### 1. Configure 
+Create a .env file with GIPHY_TOKEN and SLACK_TOKEN
 
-That's it. 
+### 2. Include Dependencies
+
+Each time you change dependencies: 
+```
+mvn package dependency:copy-dependencies -DincludeScope=runtime -DskipTests=true -Dmdep.prependGroupId=true -DoutputDirectory=lib --fail-neve
+```
+
+### 3. Compile
+
+```
+mvn clean package
+```
+
+### 4. Build Image
+```
+docker build -t <your_docker_name>/jimage:<version>
+```
+
+### 5. Profit
+```
+docker run -e "QUERY=happy" -e "NUM=3" --env-file=.env <your_docker_name>/jimage:<version>
+```
+
+ 
 
 ## Next Up
 
-1. Reduce build time. Thanks to opencv jni lib dependency, takes about 3
-   minutes.
-2. Possibly use a smaller version of the gif for faster processing. Current 
-   downsized version doesn't work in all cases.
-3. Use loom to parallelize image pull and image push. (opencv underlying C is
+1. Use loom to parallelize image pull and image push. (opencv underlying C is
    single threaded)
-4. Post indicator of what's going on to Slack (while longer processing)
-5. stroke isn't working to set strokesize.
+2. Post indicator of what's going on to Slack (while longer processing)
+3. stroke isn't working to set strokesize.
