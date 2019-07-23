@@ -1,6 +1,7 @@
 package com.pinealpha.demos.jimage;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.pinealpha.demos.jimage.Slack.*;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import okhttp3.*;
@@ -9,41 +10,15 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.Random;
-
 import org.json.JSONObject;
 import org.json.JSONArray;
-
-import org.apache.commons.lang3.time.StopWatch;
 
 public class Services {
   private static OkHttpClient client = new OkHttpClient.Builder().readTimeout(60, TimeUnit.SECONDS).build();
   private static ObjectMapper objectMapper = new ObjectMapper();
 
-  public static class Upload {
-    public String url;
-    public String type = "auto";
-    public String filename = "";
-    public String title = "";
-    public String initial_comment = "";
-  }
 
-  public static class Message {
-    public String text;
-  }
-
-  public static class SlackRequest {
-    public String channel;
-    public Upload upload;
-    public Message message;
-  }
-
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  public static class SlackResponse {
-    public boolean ok;
-    public String error;
-  }
-
-  public static void postImageToSlack(File gifToPost) throws Exception {
+  public static void postImageToSlack(String channel, File gifToPost) throws Exception {
     var token = System.getenv("SLACK_TOKEN");
     var gifPath = gifToPost.toPath();
     byte[] data = Files.readAllBytes(gifPath);
@@ -51,7 +26,7 @@ public class Services {
     var requestBody = new MultipartBody.Builder()
         .setType(MultipartBody.FORM)
         .addFormDataPart("token", token)
-        .addFormDataPart("channels", "demostream")
+        .addFormDataPart("channels", channel)
         .addFormDataPart("title", "some image")
         .addFormDataPart(
                 "file",
@@ -70,15 +45,14 @@ public class Services {
     sendRequest(r);
   }
 
-
-  public static void postImageToSlackFromURL(String url) throws Exception {
+  public static void postMessageToSlack(String channel, String msg) throws Exception {
     var token = System.getenv("SLACK_TOKEN");
 
     var requestBody = new MultipartBody.Builder()
         .setType(MultipartBody.FORM)
         .addFormDataPart("token", token)
-        .addFormDataPart("channel", "demostream")
-        .addFormDataPart("text", url)
+        .addFormDataPart("channel", channel)
+        .addFormDataPart("text", msg)
         .build();
 
     Request r = new Request.Builder()
@@ -91,6 +65,7 @@ public class Services {
 
     sendRequest(r);
   }
+
 
   private static void sendRequest(Request request) throws IOException {
     Response res = client.newCall(request).execute();

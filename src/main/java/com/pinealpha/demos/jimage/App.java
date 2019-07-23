@@ -10,6 +10,7 @@ import java.net.URL;
 import javax.imageio.stream.FileImageOutputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.StopWatch;
+import org.apache.commons.lang3.StringUtils;
 
 public class App {
 
@@ -17,9 +18,9 @@ public class App {
 
   public static void main(String[] args) throws Exception {
     System.out.println("-------- Starting Jimage --------");
-    String query = System.getenv("QUERY") == "" ? "boom" : System.getenv("QUERY");
-    int num = System.getenv("NUM") == "" ? 3 : Integer.parseInt(System.getenv("NUM"));
-    Boolean previewImage = System.getenv("PREVIEW") == "" ? Boolean.FALSE : Boolean.parseBoolean(System.getenv("PREVIEW"));
+    String query = StringUtils.isEmpty(System.getenv("QUERY")) ? "boom" : System.getenv("QUERY");
+    int num = StringUtils.isEmpty(System.getenv("NUM")) ? 3 : Integer.parseInt(System.getenv("NUM"));
+    Boolean previewImage = StringUtils.isEmpty(System.getenv("PREVIEW")) ? Boolean.FALSE : Boolean.parseBoolean(System.getenv("PREVIEW"));
     System.out.println("QUERY --> " + query);
     System.out.println("NUM --> " + num);
     System.out.println("PREVIEW --> " + previewImage);
@@ -30,6 +31,7 @@ public class App {
 
     //images = Arrays.asList("U6pavBhRsbNbPzrwWg", "5aLrlDiJPMPFS", "XbxZ41fWLeRECPsGIJ", "5GoVLqeAOo6PK", "nXxOjZrbnbRxS");
 
+    Services.postMessageToSlack("demostream", "Processing " + images.size() + " images from keyword " + query + "...");
     for (String imgID : images) {
       var usableURL = previewImage ? "https://i.giphy.com/media/" + imgID + "/200.gif" : "https://i.giphy.com/" + imgID + ".gif";
 
@@ -60,9 +62,10 @@ public class App {
       outputStream.close();
 
       timer = StopWatch.createStarted();
-      Services.postImageToSlack(finalGIF);
+      Services.postImageToSlack("demostream", finalGIF);
       System.out.println("posting to slack took " + timer.toString());
     }
+    Services.postMessageToSlack("demostream", "Finished!");
 
     System.out.println("--------// Ending Jimage --------");
   }
