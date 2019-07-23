@@ -29,26 +29,29 @@ Create a .env file with GIPHY_TOKEN and SLACK_TOKEN
 
 ### 2. Include Dependencies
 
-Each time you change dependencies: 
+Only once, then each time you change Maven dependencies: 
 ```
-mvn package dependency:copy-dependencies -DincludeScope=runtime -DskipTests=true -Dmdep.prependGroupId=true -DoutputDirectory=lib --fail-neve
-```
-
-### 3. Compile
-
-```
-mvn clean package
+./libs.sh
 ```
 
-### 4. Build Image
+### 3. Compile and Build Image
+
 ```
-docker build -t <your_docker_name>/jimage:<version>
+./build.sh <version> (ie 1.0)
 ```
 
-### 5. Profit
+### 4. Profit
 ```
 docker run -e "QUERY=happy" -e "NUM=3" --env-file=.env <your_docker_name>/jimage:<version>
 ```
+
+
+#### Inputs to container: 
+
+* *QUERY* [string] (ie "excited") -- Query string
+* *NUM* [int] (ie "5") -- Number of images to pull
+* *PREVIEW* [bool] (ie "false") -- If set to true, a 
+smaller image will be pulled from Giphy.
 
  
 
@@ -56,4 +59,3 @@ docker run -e "QUERY=happy" -e "NUM=3" --env-file=.env <your_docker_name>/jimage
 
 1. Use loom to parallelize image pull and image push. (opencv underlying C is
    single threaded)
-2. Post indicator of what's going on to Slack (while longer processing)
