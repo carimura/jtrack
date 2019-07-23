@@ -54,25 +54,19 @@ public class FaceDetect {
             return orig;
         }
 
-        BasicStroke basicStroke = new BasicStroke(1.5f);
         for (int iface = 0; iface < nFaces; ++iface) {
             Rect rect = faces.get(iface);
             Graphics2D orig2D = orig.createGraphics();
+            orig2D.setStroke(new BasicStroke(4.0f));
+            orig2D.setColor(new Color(255,255, 0));
             orig2D.drawRect(rect.x(), rect.y(), rect.width(), rect.height());
-            orig2D.setStroke(basicStroke);
             orig2D.dispose();
         }
         return orig;
     }
 
-    /**
-     *
-     *
-     * */
     public BufferedImage processImageFromMat(Pair matFrame) {
 
-        return drawFaces(
-                matFrame.getLeft(), detectFaces(matFrame.getRight())
-        );
+        return drawFaces(matFrame.getLeft(), detectFaces(matFrame.getRight()));
     }
 }

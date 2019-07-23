@@ -57,4 +57,3 @@ docker run -e "QUERY=happy" -e "NUM=3" --env-file=.env <your_docker_name>/jimage
 1. Use loom to parallelize image pull and image push. (opencv underlying C is
    single threaded)
 2. Post indicator of what's going on to Slack (while longer processing)
-3. stroke isn't working to set strokesize.
