@@ -34,11 +34,10 @@ public class App {
     Services.postMessageToSlack("demostream", "Processing " + images.size() + " images from keyword " + query + "...");
     for (String imgID : images) {
       var usableURL = previewImage ? "https://i.giphy.com/media/" + imgID + "/200.gif" : "https://i.giphy.com/" + imgID + ".gif";
-
       System.out.println("\nusableURL --> " + usableURL);
 
-      File originalGIF = new File(FILEPATH + "temp.gif");
-      File finalGIF = new File(FILEPATH + "output.gif");
+      var originalGIF = new File(FILEPATH + "temp.gif");
+      var finalGIF = new File(FILEPATH + "output.gif");
 
       FileUtils.copyURLToFile(new URL(usableURL), originalGIF);
       System.out.println("copyURLToFile took " + timer.toString());
@@ -46,9 +45,8 @@ public class App {
       var outputStream = new FileImageOutputStream(finalGIF);
       var inputStream = new FileInputStream(originalGIF);
       var gifDecoder = new GifDecoder();
-
       var writer = new GifEncoder(outputStream, BufferedImage.TYPE_INT_RGB, 0, true);
-      FaceDetect faceDetect = new FaceDetect();
+      var faceDetect = new FaceDetect();
 
       ArrayList<Pair> mats = gifDecoder.framesToMat(inputStream);
 

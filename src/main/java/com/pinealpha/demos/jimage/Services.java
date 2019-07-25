@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.Random;
 import org.json.JSONObject;
-import org.json.JSONArray;
 
 public class Services {
   private static OkHttpClient client = new OkHttpClient.Builder().readTimeout(60, TimeUnit.SECONDS).build();
@@ -34,7 +33,7 @@ public class Services {
                 RequestBody.create(null, data))
         .build();
 
-    Request r = new Request.Builder()
+    var r = new Request.Builder()
         .url(new HttpUrl.Builder()
             .scheme("https")
             .host("slack.com")
@@ -55,7 +54,7 @@ public class Services {
         .addFormDataPart("text", msg)
         .build();
 
-    Request r = new Request.Builder()
+    var r = new Request.Builder()
         .url(new HttpUrl.Builder()
             .scheme("https")
             .host("slack.com")
@@ -68,7 +67,7 @@ public class Services {
 
 
   private static void sendRequest(Request request) throws IOException {
-    Response res = client.newCall(request).execute();
+    var res = client.newCall(request).execute();
     if (!res.isSuccessful()) {
       throw new RuntimeException("Invalid response : " + res.toString());
     }
@@ -86,7 +85,7 @@ public class Services {
 
   public static ArrayList<String> getImagesFromGiphy(String query, int num) throws Exception {
     var token = System.getenv("GIPHY_TOKEN");
-    Random rand = new Random();
+    var rand = new Random();
     int offset = rand.nextInt(20);
 
     var request = new Request.Builder()
@@ -94,21 +93,17 @@ public class Services {
         .build();
 
     var respString = "";
-    try (Response response = client.newCall(request).execute()) {
+    try (var response = client.newCall(request).execute()) {
       if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
       respString = response.body().string();
     }
 
-    JSONObject results = new JSONObject(respString);
-
-    JSONArray ja = results.getJSONArray("data");
-
+    var results = new JSONObject(respString);
+    var ja = results.getJSONArray("data");
     var images = new ArrayList<String>();
 
     for (int i = 0; i < ja.length(); i++) {
       var currentJo = ja.getJSONObject(i);
-      //System.out.println(currentJo.toString(2));
-      //var imgURL = currentJo.getJSONObject("images").getJSONObject("480w_still").getString("url");
       var imgID = currentJo.getString("id");
 
       images.add(imgID);
