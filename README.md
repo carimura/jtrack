@@ -25,19 +25,20 @@ Example of face detection:
 ## To Use
 
 ### 1. Configure 
-Create a .env file with GIPHY_TOKEN and SLACK_TOKEN
+* Create a .env file with GIPHY_TOKEN and SLACK_TOKEN
+* Specify your Docker image in pom.xml under properties (ie `<docker.image>carimura/jimage</docker.image>`)
 
 ### 2. Include Dependencies
 
-Only once, then each time you change Maven dependencies: 
+Only once! (Then each time you change Maven dependencies): 
 ```
 ./libs.sh
 ```
 
-### 3. Compile and Build Image
+### 3. Compile and Build (Includes Docker build)
 
 ```
-./build.sh <version> (ie 1.0)
+mvn clean package
 ```
 
 ### 4. Profit

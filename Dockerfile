@@ -6,9 +6,7 @@ RUN yum update -y && yum install -y gtk2.x86_64
 
 ADD lib/*.jar /usr/share/jimage/
 ADD src/main/resources/* /usr/share/jimage/
-ADD docker-entry.sh /docker-entry.sh
+ADD target/classes/* /usr/share/jimage/
 ADD oci_key.pem /usr/share/jimage/oci_key.pem
 
-ADD target/jimage-1.0.jar  /usr/share/jimage/jimage.jar
-
-ENTRYPOINT ["/bin/bash", "docker-entry.sh"]
+ENTRYPOINT ["java", "-cp", "/usr/share/jimage/*:/usr/share/jimage", "com.pinealpha.demos.jimage.App"]
