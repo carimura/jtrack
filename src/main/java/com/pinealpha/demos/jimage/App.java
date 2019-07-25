@@ -2,9 +2,8 @@ package com.pinealpha.demos.jimage;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
-import java.util.Arrays;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import javax.imageio.stream.FileImageOutputStream;
@@ -16,7 +15,33 @@ public class App {
 
   private static final String FILEPATH = "/usr/share/jimage/";
 
+  public static File processSingleGIF(FaceDetect faceDetect, String usableURL, String storeFolder) throws IOException {
+    File originalGIF = new File(storeFolder + "original.gif");
+    File finalGIF = new File(storeFolder + "final.gif");
+
+    FileUtils.copyURLToFile(new URL(usableURL), originalGIF);
+
+    var outputStream = new FileImageOutputStream(finalGIF);
+    var inputStream = new FileInputStream(originalGIF);
+    var gifDecoder = new GifDecoder();
+
+    var writer = new GifEncoder(outputStream, BufferedImage.TYPE_INT_RGB, 0, true);
+
+    gifDecoder.read(inputStream);
+    for (var frame : faceDetect.processFrameWithDetections(gifDecoder)) {
+      writer.writeToSequence(frame);
+    }
+
+    writer.close();
+    outputStream.close();
+
+    return finalGIF;
+  }
+
   public static void main(String[] args) throws Exception {
+    // should happen only once
+    FaceDetect faceDetect = new FaceDetect();
+
     System.out.println("-------- Starting Jimage --------");
     String query = StringUtils.isEmpty(System.getenv("QUERY")) ? "boom" : System.getenv("QUERY");
     int num = StringUtils.isEmpty(System.getenv("NUM")) ? 3 : Integer.parseInt(System.getenv("NUM"));
@@ -36,30 +61,15 @@ public class App {
       var usableURL = previewImage ? "https://i.giphy.com/media/" + imgID + "/200.gif" : "https://i.giphy.com/" + imgID + ".gif";
       System.out.println("\nusableURL --> " + usableURL);
 
-      var originalGIF = new File(FILEPATH + "temp.gif");
-      var finalGIF = new File(FILEPATH + "output.gif");
-
-      FileUtils.copyURLToFile(new URL(usableURL), originalGIF);
       System.out.println("copyURLToFile took " + timer.toString());
 
-      var outputStream = new FileImageOutputStream(finalGIF);
-      var inputStream = new FileInputStream(originalGIF);
-      var gifDecoder = new GifDecoder();
-      var writer = new GifEncoder(outputStream, BufferedImage.TYPE_INT_RGB, 0, true);
-      var faceDetect = new FaceDetect();
-
-      ArrayList<Pair> mats = gifDecoder.framesToMat(inputStream);
+      var finalGIF = processSingleGIF(faceDetect, usableURL, FILEPATH);
 
       timer = StopWatch.createStarted();
-      for (Pair matFrame: mats) {
-        writer.writeToSequence(faceDetect.processImageFromMat(matFrame));
-      }
       System.out.println("FaceDetect took " + timer.toString());
 
-      writer.close();
-      outputStream.close();
-
       timer = StopWatch.createStarted();
+      // todo: wrap with fiber
       Services.postImageToSlack("demostream", finalGIF);
       System.out.println("posting to slack took " + timer.toString());
     }

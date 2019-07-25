@@ -756,37 +756,4 @@ public class GifDecoder {
             readBlock();
         } while ((blockSize > 0) && !err());
     }
-
-    /**
-     *
-     *
-     * */
-    public ArrayList<Pair> framesToMat(InputStream gifSource) {
-        read(gifSource);
-        ArrayList<Pair> mats = new ArrayList<>();
-        int n = getFrameCount();
-        for (int i = 0; i < n; i++) {
-            BufferedImage frame = getFrame(i);
-            mats.add(new Pair(frame, Java2DFrameUtils.toMat(frame)));
-        }
-        return mats;
-    }
-
-    /**
-     *
-     *
-     * */
-    public ArrayList<String> saveFramesFrom(String gifFile) throws IOException {
-        read(gifFile);
-        ArrayList<String> framePaths = new ArrayList<>();
-        int n = getFrameCount();
-        for (int i = 0; i < n; i++) {
-            String filePath = String.format("output-%d.png", i);
-            BufferedImage frame = getFrame(i);
-            ImageIO.write(frame, "png",
-                    new File(filePath));
-            framePaths.add(filePath);
-        }
-        return framePaths;
-    }
 }
