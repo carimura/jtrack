@@ -59,8 +59,8 @@ public class App {
     Services.postMessageToSlack("demostream", "Processing " + images.size() + " images from keyword " + query + "...");
     for (String imgID : images) {
       var usableURL = previewImage ? "https://i.giphy.com/media/" + imgID + "/200.gif" : "https://i.giphy.com/" + imgID + ".gif";
-
       System.out.println("\nusableURL --> " + usableURL);
+
       System.out.println("copyURLToFile took " + timer.toString());
 
       var finalGIF = processSingleGIF(faceDetect, usableURL, FILEPATH);
