@@ -4,6 +4,6 @@
 
 set -e
 rm -Rf lib
-mvn package dependency:copy-dependencies -DincludeScope=runtime -DskipTests=true -Dmdep.prependGroupId=true -DoutputDirectory=lib --fail-never
+mvn package dependency:copy-dependencies -DincludeScope=runtime -DskipTests=true -DskipBuild -Dmdep.prependGroupId=true -DoutputDirectory=lib --fail-never
 cd lib
-rm **android** **ios** **windows** **arm** **ppc** **x86.** **libfreenect** **librealsense** **leptonica** **tesseract** **flycapture** **platform** **macosx**
+rm -f **android** **ios** **windows** **arm** **ppc** **x86.** **libfreenect** **librealsense** **leptonica** **tesseract** **flycapture** **platform** **macosx**

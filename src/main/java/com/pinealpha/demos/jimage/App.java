@@ -52,28 +52,25 @@ public class App {
     System.out.println("NUM --> " + num);
     System.out.println("PREVIEW --> " + previewImage);
 
-    var timer = StopWatch.createStarted();
-
     List<String> images = Services.getImagesFromGiphy(query, num);
 
     //images = Arrays.asList("U6pavBhRsbNbPzrwWg", "5aLrlDiJPMPFS", "XbxZ41fWLeRECPsGIJ", "5GoVLqeAOo6PK", "nXxOjZrbnbRxS");
 
     Services.postMessageToSlack("demostream", "Processing " + images.size() + " images from keyword " + query + "...");
+
+    var timer = new StopWatch();
+    var timer2 = new StopWatch();
     for (String imgID : images) {
+      timer = StopWatch.createStarted();
       var usableURL = previewImage ? "https://i.giphy.com/media/" + imgID + "/200.gif" : "https://i.giphy.com/" + imgID + ".gif";
       System.out.println("\nusableURL --> " + usableURL);
-
-      System.out.println("copyURLToFile took " + timer.toString());
-
+      timer2 = StopWatch.createStarted();
       var finalGIF = processSingleGIF(faceDetect, usableURL, FILEPATH);
-
-      timer = StopWatch.createStarted();
-      System.out.println("FaceDetect took " + timer.toString());
-
-      timer = StopWatch.createStarted();
-      // todo: wrap with fiber
+      System.out.println("processGIF took " + timer2.toString());
+      timer2 = StopWatch.createStarted();
       Services.postImageToSlack("demostream", finalGIF);
-      System.out.println("posting to slack took " + timer.toString());
+      System.out.println("post to slack took " + timer2.toString());
+      System.out.println("entire image took " + timer.toString());
     }
     Services.postMessageToSlack("demostream", "Finished!");
 

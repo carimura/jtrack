@@ -58,7 +58,4 @@ smaller image will be pulled from Giphy.
 
 ## Next Up
 
-1. Use loom to parallelize image pull and image push. (opencv underlying C is
-   single threaded)
-2. Experiment with Jlink for custom runtime (smaller image)
-3. maybe skip docker steps during libs.sh (think it's building image)
+1. illegal reflective access message for bouncy castle required by OCI stuff
