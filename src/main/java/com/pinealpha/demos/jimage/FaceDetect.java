@@ -11,7 +11,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import static org.bytedeco.opencv.global.opencv_imgproc.*;
@@ -92,14 +91,12 @@ public class FaceDetect {
         return drawFaces(frame, faces);
     }
 
-    public ArrayList<BufferedImage> processFrameWithDetections(GifDecoder gifDecoder) {
-
-        var finalFrames = new ArrayList<BufferedImage>();
+    public void processFrameWithDetections(GifDecoder gifDecoder, FaceDetectionCallback callback) throws IOException {
 
         for (int i = 0; i < gifDecoder.getFrameCount(); ++i) {
-            finalFrames.add(doDetection(gifDecoder, i));
+            callback.call(
+                    doDetection(gifDecoder, i)
+            );
         }
-
-        return finalFrames;
     }
 }
