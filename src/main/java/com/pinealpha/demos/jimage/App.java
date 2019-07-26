@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 public class App {
 
   private static final String FILEPATH = "/usr/share/jimage/";
-  //private static final String FILEPATH = "/users/chad/workspace/java/jimage/target/";
 
   public static File processSingleGIF(FaceDetect faceDetect, String usableURL, String storeFolder) throws IOException {
     File originalGIF = new File(storeFolder + "original.gif");

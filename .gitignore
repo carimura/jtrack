@@ -3,3 +3,5 @@ target
 oci_key.pem
 .java-version
 .env
+/lib
+!java-runtime/lib

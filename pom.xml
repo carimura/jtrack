@@ -32,7 +32,7 @@
       <id>skipTestRun</id>
       <activation>
         <property>
-          <name>skipTests</name>
+          <name>skipBuild</name>
         </property>
       </activation>
       <properties>
