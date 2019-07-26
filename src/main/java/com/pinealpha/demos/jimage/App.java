@@ -25,14 +25,16 @@ public class App {
     var inputStream = new FileInputStream(originalGIF);
     var gifDecoder = new GifDecoder();
 
-    var writer = new GifEncoder(outputStream, BufferedImage.TYPE_INT_RGB, 0, true);
+    var gifEncoder = new GifEncoder(outputStream, BufferedImage.TYPE_INT_RGB, 0, true);
 
     gifDecoder.read(inputStream);
-    for (var frame : faceDetect.processFrameWithDetections(gifDecoder)) {
-      writer.writeToSequence(frame);
-    }
 
-    writer.close();
+    faceDetect.processFrameWithDetections(gifDecoder, (BufferedImage img) -> {
+      gifEncoder.writeToSequence(img);
+      return img;
+    });
+
+    gifEncoder.close();
     outputStream.close();
 
     return finalGIF;
