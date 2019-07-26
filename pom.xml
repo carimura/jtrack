@@ -6,7 +6,7 @@
 
   <groupId>com.pinealpha.demos.jimage</groupId>
   <artifactId>jimage</artifactId>
-  <version>1.1</version>
+  <version>1.2</version>
 
   <name>jimage</name>
   <url>http://www.pinealpha.com</url>
@@ -17,6 +17,29 @@
     <maven.compiler.target>12</maven.compiler.target>
     <docker.image>carimura/jimage</docker.image>
   </properties>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <skipDockerBuild>false</skipDockerBuild>
+      </properties>
+    </profile>
+    <profile>
+      <id>skipTestRun</id>
+      <activation>
+        <property>
+          <name>skipTests</name>
+        </property>
+      </activation>
+      <properties>
+        <skipDockerBuild>true</skipDockerBuild>
+      </properties>
+    </profile>
+  </profiles>
 
   <dependencies>
     <dependency>
@@ -103,6 +126,7 @@
             <argument>${docker.image}</argument>
             <argument>${project.version}</argument>
           </arguments>
+          <skip>${skipDockerBuild}</skip>
         </configuration>
       </plugin>
     </plugins>

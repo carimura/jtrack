@@ -60,3 +60,4 @@ smaller image will be pulled from Giphy.
 
 1. Use loom to parallelize image pull and image push. (opencv underlying C is
    single threaded)
+2. Experiment with Jlink for custom runtime (smaller image)
