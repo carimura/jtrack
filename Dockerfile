@@ -1,8 +1,7 @@
-FROM oraclelinux:latest
+FROM oraclelinux:7-slim
 
+RUN yum update -y && yum install -y gtk2.x86_64 && yum install -y tar
 RUN curl -L https://raw.githubusercontent.com/denismakogon/oraclelinux-opencv/master/apply_binaries.sh | /bin/bash
-
-RUN yum update -y && yum install -y gtk2.x86_64
 
 ADD java-runtime /usr/share/jimage/java-runtime/
 ADD lib/*.jar /usr/share/jimage/

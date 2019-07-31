@@ -5,11 +5,13 @@ import com.pinealpha.demos.jimage.Slack.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import okhttp3.*;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.Random;
+
 import org.json.JSONObject;
 
 public class Services {
@@ -28,9 +30,9 @@ public class Services {
         .addFormDataPart("channels", channel)
         .addFormDataPart("title", "some image")
         .addFormDataPart(
-                "file",
-                gifPath.toString(),
-                RequestBody.create(null, data))
+            "file",
+            gifPath.toString(),
+            RequestBody.create(null, data))
         .build();
 
     var r = new Request.Builder()
