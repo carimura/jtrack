@@ -1,4 +1,4 @@
-package com.pinealpha.demos.jimage;
+package com.pinealpha.demos.jtrack;
 
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import com.oracle.bmc.objectstorage.ObjectStorage;
@@ -17,8 +17,8 @@ import java.nio.file.Paths;
 
 public class OCICaller {
 
-  private static final String BUCKETIN = "jimage-in";
-  private static final String BUCKETOUT = "jimage-out";
+  private static final String BUCKETIN = "jtrack-in";
+  private static final String BUCKETOUT = "jtrack-out";
   private static final String TENANCY = "oracle-serverless-devrel";
 
   public static void getImageFromOCI(String filePath, String fileIn) throws Exception {

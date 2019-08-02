@@ -1,4 +1,4 @@
-package com.pinealpha.demos.jimage;
+package com.pinealpha.demos.jtrack;
 
 import org.bytedeco.javacv.Java2DFrameUtils;
 

@@ -1,6 +1,6 @@
-package com.pinealpha.demos.jimage;
+package com.pinealpha.demos.jtrack;
 
-import com.pinealpha.demos.jimage.Slack.*;
+import com.pinealpha.demos.jtrack.Slack.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

@@ -1,4 +1,4 @@
-package com.pinealpha.demos.jimage;
+package com.pinealpha.demos.jtrack;
 
 import static org.junit.Assert.assertTrue;
 

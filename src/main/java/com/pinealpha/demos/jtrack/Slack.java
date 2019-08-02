@@ -1,4 +1,4 @@
-package com.pinealpha.demos.jimage;
+package com.pinealpha.demos.jtrack;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

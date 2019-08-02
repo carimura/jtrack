@@ -1,4 +1,4 @@
-package com.pinealpha.demos.jimage;
+package com.pinealpha.demos.jtrack;
 
 import org.junit.Test;
 import static junit.framework.TestCase.*;

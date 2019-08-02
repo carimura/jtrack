@@ -1,4 +1,4 @@
-# jimage
+# jtrack
 
 ## Overview
 
@@ -18,15 +18,15 @@ You can also get images from Oracle object storage as well.
 
 Example of face detection: 
 
-<img src="https://raw.githubusercontent.com/carimura/jimage/master/result.gif" /> <br />
+<img src="https://raw.githubusercontent.com/carimura/jtrack/master/result.gif" /> <br />
 
-<img src="https://raw.githubusercontent.com/carimura/jimage/master/result.jpg" width=400/> <br />
+<img src="https://raw.githubusercontent.com/carimura/jtrack/master/result.jpg" width=400/> <br />
 
 ## To Use
 
 ### 1. Configure 
 * Create a .env file with GIPHY_TOKEN and SLACK_TOKEN
-* Specify your Docker image in pom.xml under properties (ie `<docker.image>carimura/jimage</docker.image>`)
+* Specify your Docker image in pom.xml under properties (ie `<docker.image>carimura/jtrack</docker.image>`)
 
 ### 2. Include Dependencies
 
@@ -43,7 +43,7 @@ mvn clean package
 
 ### 4. Profit
 ```
-docker run -e "QUERY=happy" -e "NUM=3" --env-file=.env <your_docker_name>/jimage:<version>
+docker run -e "QUERY=happy" -e "NUM=3" --env-file=.env <your_docker_name>/jtrack:<version>
 ```
 
 

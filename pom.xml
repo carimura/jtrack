@@ -4,18 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.pinealpha.demos.jimage</groupId>
-  <artifactId>jimage</artifactId>
-  <version>2.3</version>
+  <groupId>com.pinealpha.demos.jtrack</groupId>
+  <artifactId>jtrack</artifactId>
+  <version>2.5</version>
 
-  <name>jimage</name>
+  <name>jtrack</name>
   <url>http://www.pinealpha.com</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>12</maven.compiler.source>
     <maven.compiler.target>12</maven.compiler.target>
-    <docker.image>carimura/jimage</docker.image>
+    <docker.image>carimura/jtrack</docker.image>
   </properties>
 
   <profiles>
