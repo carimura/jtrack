@@ -1,12 +1,37 @@
+FROM oraclelinux:7-slim as maven-stage
+
+ENV JAVA_HOME=/jdk-14
+RUN yum update -y && \
+    yum install -y tar gzip && \
+    curl -L https://download.java.net/java/early_access/loom/2/openjdk-14-loom+2-4_linux-x64_bin.tar.gz | tar xvz -C / && \
+    curl -L http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -o /etc/yum.repos.d/epel-apache-maven.repo && \
+    yum update -y && yum install -y apache-maven
+
+ADD pom.xml /project/
+
+ADD api.gif.com/ /project/api.gif.com
+ADD api.facedetect.com/ /project/api.facedetect.com
+ADD api.oci.oracle /project/api.oci.oracle
+ADD api.services.com /project/api.services.com
+ADD app.main.entrypoint /project/app.main.entrypoint
+
+ADD build.sh /project/
+
+WORKDIR /project
+RUN ./build.sh
+RUN yum clean all -y
+
 FROM oraclelinux:7-slim
 
-RUN yum update -y && yum install -y gtk2.x86_64 && yum install -y tar
-RUN curl -L https://raw.githubusercontent.com/denismakogon/oraclelinux-opencv/master/apply_binaries.sh | /bin/bash
+COPY --from=manve-stage /project/target/*.jar /target/
+COPY --from=maven-stage /project/app.main.entrypoint/target/maven-jlink /jdk
 
-ADD java-runtime /usr/share/jtrack/java-runtime/
-ADD lib/*.jar /usr/share/jtrack/
-ADD src/main/resources/* /usr/share/jtrack/
-ADD target/classes /usr/share/jtrack/
+RUN yum update -y && yum install -y gtk2-devel
+
+ADD entrypoint.sh /entrypoint.sh
+ADD app.main.entrypoint/src/main/resources/* /usr/share/jtrack/
 ADD oci_key.pem /usr/share/jtrack/oci_key.pem
 
-ENTRYPOINT ["/usr/share/jtrack/java-runtime/bin/java", "-cp", "/usr/share/jtrack/*:/usr/share/jtrack", "com.pinealpha.demos.jtrack.App"]
+ENV JAVA_HOME=/jdk
+
+ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
