@@ -18,12 +18,23 @@ ADD app.main.entrypoint /project/app.main.entrypoint
 ADD build.sh /project/
 
 WORKDIR /project
-RUN ./build.sh
+
+RUN mvn clean
+RUN mvn clean package dependency:copy-dependencies \
+        -DincludeScope=runtime \
+        -DskipTests=true \
+        -Dmdep.prependGroupId=true \
+        -DoutputDirectory=../target \
+        -DskipDockerBuild=true \
+        --fail-never \
+        -Dplatform.id=linux-x86_64
+RUN mvn package -DskipDockerBuild=true -Dplatform.id=linux-x86_64
+
 RUN yum clean all -y
 
 FROM oraclelinux:7-slim
 
-COPY --from=manve-stage /project/target/*.jar /target/
+COPY --from=maven-stage /project/target/*.jar /target/
 COPY --from=maven-stage /project/app.main.entrypoint/target/maven-jlink /jdk
 
 RUN yum update -y && yum install -y gtk2-devel

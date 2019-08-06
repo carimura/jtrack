@@ -20,4 +20,6 @@ mvn clean package dependency:copy-dependencies \
     -DskipDockerBuild=true \
     --fail-never \
     -Dplatform.id=${os_type}-${os_arch}
-mvn package -Dplatform.id=${os_type}-${os_arch}
+mvn package \
+    -Dplatform.id=${os_type}-${os_arch} \
+    -DskipDockerBuild=true

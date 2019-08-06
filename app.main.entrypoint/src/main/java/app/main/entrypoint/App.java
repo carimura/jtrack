@@ -4,15 +4,13 @@ import api.facedetect.com.*;
 import api.gif.com.*;
 
 import api.services.com.Services;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.imageio.stream.FileImageOutputStream;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 
 public class App {
@@ -23,7 +21,8 @@ public class App {
     File originalGIF = new File(storeFolder + "original.gif");
     File finalGIF = new File(storeFolder + "final.gif");
 
-    FileUtils.copyURLToFile(new URL(usableURL), originalGIF);
+    InputStream in = new URL(usableURL).openStream();
+    Files.copy(in, originalGIF.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
     FileImageOutputStream outputStream = new FileImageOutputStream(finalGIF);
     FileInputStream inputStream = new FileInputStream(originalGIF);
@@ -52,13 +51,17 @@ public class App {
     return finalGIF;
   }
 
+  private static boolean isEmpty(CharSequence cs) {
+    return cs == null || cs.length() == 0;
+  }
+
   public static void main(String[] args) throws Exception {
     FaceDetect faceDetect = new FaceDetect();
 
     System.out.println("-------- Starting jtrack --------");
-    String query = StringUtils.isEmpty(System.getenv("QUERY")) ? "boom" : System.getenv("QUERY");
-    int num = StringUtils.isEmpty(System.getenv("NUM")) ? 3 : Integer.parseInt(System.getenv("NUM"));
-    Boolean previewImage = StringUtils.isEmpty(System.getenv("PREVIEW")) ? Boolean.FALSE : Boolean.parseBoolean(System.getenv("PREVIEW"));
+    String query = isEmpty(System.getenv("QUERY")) ? "boom" : System.getenv("QUERY");
+    int num = isEmpty(System.getenv("NUM")) ? 3 : Integer.parseInt(System.getenv("NUM"));
+    var previewImage = isEmpty(System.getenv("PREVIEW")) ? Boolean.FALSE : Boolean.parseBoolean(System.getenv("PREVIEW"));
     System.out.println("QUERY --> " + query);
     System.out.println("NUM --> " + num);
     System.out.println("PREVIEW --> " + previewImage);
