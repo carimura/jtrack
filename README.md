@@ -58,5 +58,5 @@ smaller image will be pulled from Giphy.
 
 ## Next Up
 
+1. switch to Jackson. much cleaner serialization of json results.
 1. illegal reflective access message for bouncy castle required by OCI stuff
-2. try OL slim image for even smaller image
