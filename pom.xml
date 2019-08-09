@@ -67,6 +67,7 @@
             </goals>
           </execution>
         </executions>
+        <inherited>false</inherited>
         <configuration>
           <executable>docker-build.sh</executable>
           <arguments>

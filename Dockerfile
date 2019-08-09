@@ -34,10 +34,10 @@ RUN yum clean all -y
 
 FROM oraclelinux:7-slim
 
-COPY --from=maven-stage /project/target/*.jar /target/
+COPY --from=maven-stage /project/target/org.bytedeco* /target/
 COPY --from=maven-stage /project/app.main.entrypoint/target/maven-jlink /jdk
 
-RUN yum update -y && yum install -y gtk2-devel
+RUN yum update -y && yum install -y gtk2
 
 ADD entrypoint.sh /entrypoint.sh
 ADD app.main.entrypoint/src/main/resources/* /usr/share/jtrack/

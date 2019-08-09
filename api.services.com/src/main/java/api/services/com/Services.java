@@ -4,19 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.net.ProxySelector;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Random;
 
 
@@ -40,64 +34,33 @@ public class Services {
     giphyToken = gT;
   }
 
-  private HttpRequest.BodyPublisher ofMimeMultipartData(Map<Object, Object> data,
-                                                        String boundary) throws IOException {
-    var byteArrays = new ArrayList<byte[]>();
-    byte[] separator = ("--" + boundary + "\r\nContent-Disposition: form-data; name=")
-            .getBytes(StandardCharsets.UTF_8);
-    for (Map.Entry<Object, Object> entry : data.entrySet()) {
-      byteArrays.add(separator);
-
-      if (entry.getValue() instanceof Path) {
-        var path = (Path) entry.getValue();
-        String mimeType = Files.probeContentType(path);
-        byteArrays.add(("\"" + entry.getKey() + "\"; filename=\"" + path.getFileName()
-                + "\"\r\nContent-Type: " + mimeType + "\r\n\r\n").getBytes(StandardCharsets.UTF_8));
-        byteArrays.add(Files.readAllBytes(path));
-        byteArrays.add("\r\n".getBytes(StandardCharsets.UTF_8));
-      }
-      else {
-        byteArrays.add(("\"" + entry.getKey() + "\"\r\n\r\n" + entry.getValue() + "\r\n")
-                .getBytes(StandardCharsets.UTF_8));
-      }
-    }
-    byteArrays.add(("--" + boundary + "--").getBytes(StandardCharsets.UTF_8));
-
-    return HttpRequest.BodyPublishers.ofByteArrays(byteArrays);
-  }
-
   public void postImageToSlack(String channel, File gifToPost) throws Exception {
-    var gifPath = gifToPost.toPath();
-
-    Map<Object, Object> data = new LinkedHashMap<>();
-    data.put("token", this.slackToken);
-    data.put("channels", channel);
-    data.put("title", "some image");
-    data.put("file", gifPath);
-    String boundary = new BigInteger(256, new Random()).toString();
+    var publisher = new MultiPartBodyPublisher()
+            .addPart("token", this.slackToken)
+            .addPart("channels", channel)
+            .addPart("title", "some image")
+            .addPart("file", gifToPost.toPath());
 
     var request = HttpRequest.newBuilder()
-            .header("Content-Type", "multipart/form-data;boundary=" + boundary)
-            .POST(ofMimeMultipartData(data, boundary))
-            .uri(URI.create("https://slack.com/api/chat.postMessage"))
-            .POST(ofMimeMultipartData(data, boundary))
+            .uri(URI.create("https://slack.com/api/files.upload"))
+            .header("Content-Type", "multipart/form-data;boundary=" + publisher.getBoundary())
+            .POST(publisher.build())
+            .timeout(Duration.ofMinutes(1))
             .build();
 
     sendRequest(request);
   }
 
   public void postMessageToSlack(String channel, String msg) throws Exception {
-    Map<Object, Object> data = new LinkedHashMap<>();
-    data.put("token", this.slackToken);
-    data.put("channels", channel);
-    data.put("text", msg);
-    String boundary = new BigInteger(256, new Random()).toString();
+    var publisher = new MultiPartBodyPublisher()
+            .addPart("token", this.slackToken)
+            .addPart("channel", channel)
+            .addPart("text", msg);
 
     var request = HttpRequest.newBuilder()
-            .header("Content-Type", "multipart/form-data;boundary=" + boundary)
-            .POST(ofMimeMultipartData(data, boundary))
             .uri(URI.create("https://slack.com/api/chat.postMessage"))
-            .POST(ofMimeMultipartData(data, boundary))
+            .header("Content-Type", "multipart/form-data;boundary=" + publisher.getBoundary())
+            .POST(publisher.build())
             .build();
 
     sendRequest(request);
@@ -118,7 +81,6 @@ public class Services {
 
   }
 
-
   public ArrayList<String> getImagesFromGiphy(String query, int num) throws Exception {
     Random rand = new Random();
     int offset = rand.nextInt(20);
@@ -132,12 +94,10 @@ public class Services {
 
     var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-    var respString = "";
+    String respString = response.body();
 
     if (response.statusCode() > 202) {
-      throw new IOException(String.format("Unexpected code: %d\nBody: %s" + response.statusCode(), response.body()));
-    } else {
-      respString = response.body();
+      throw new IOException(respString);
     }
 
     ObjectMapper mapper = new ObjectMapper();
@@ -148,8 +108,6 @@ public class Services {
 
     for (int i = 0; i < ja.size(); i++) {
       var currentJo = ja.get(i);
-      //System.out.println(currentJo.toString(2));
-      //var imgURL = currentJo.getJSONObject("images").getJSONObject("480w_still").getString("url");
       var imgID = currentJo.get("id").textValue();
 
       images.add(imgID);

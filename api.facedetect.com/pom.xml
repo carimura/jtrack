@@ -31,7 +31,6 @@
             <scope>test</scope>
         </dependency>
 
-
         <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>javacpp</artifactId>

@@ -2,4 +2,4 @@
 
 set -xe
 
-/jdk/bin/java -cp $(echo /target/*.jar | tr ' ' ':') main.app.Main /original.gif
+/jdk/bin/java -cp $(echo / target/org.bytedeco.*.jar | tr ' ' ':') app.main.entrypoint.App

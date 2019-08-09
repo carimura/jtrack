@@ -18,7 +18,6 @@ mvn clean package dependency:copy-dependencies \
     -Dmdep.prependGroupId=true \
     -DoutputDirectory=../target \
     -DskipDockerBuild=true \
-    --fail-never \
     -Dplatform.id=${os_type}-${os_arch}
 mvn package \
     -Dplatform.id=${os_type}-${os_arch} \

@@ -69,16 +69,24 @@ public class App {
     var giphyToken = System.getenv("GIPHY_TOKEN");
     var slackToken = System.getenv("SLACK_TOKEN");
     var services = new Services(slackToken, giphyToken);
+
+    // todo: foreach + lambda instead of for-loop
     var images = services.getImagesFromGiphy(query, num);
     //images = Arrays.asList("U6pavBhRsbNbPzrwWg", "5aLrlDiJPMPFS", "XbxZ41fWLeRECPsGIJ", "5GoVLqeAOo6PK", "nXxOjZrbnbRxS");
+
+    // todo: wrap with fiber, outbound net IO operation
     services.postMessageToSlack("demostream", "Processing " + images.size() + " images from keyword " + query + "...");
 
     for (String imgID : images) {
       var usableURL = previewImage ? "https://i.giphy.com/media/" + imgID + "/200.gif" : "https://i.giphy.com/" + imgID + ".gif";
       System.out.println("\nusableURL --> " + usableURL);
       var finalGIF = processSingleGIF(faceDetect, usableURL, FILEPATH);
+
+      // todo: wrap with fiber, outbound net IO operation
       services.postImageToSlack("demostream", finalGIF);
     }
+
+    // todo: wrap with fiber, outbound net IO operation
     services.postMessageToSlack("demostream", "Finished!");
 
     System.out.println("--------// Ending jtrack --------");
