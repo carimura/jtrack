@@ -1,6 +1,0 @@
-[DEFAULT]
-user=ocid1.user.oc1..aaaaaaaaaw6q73l3ngvk7hvgr6vhvcqml5adfyhosclq6d3sgpioogdtbv7q
-fingerprint=8e:69:a7:0d:b4:bc:72:05:76:39:5b:98:af:e5:2d:e6
-key_file=/usr/share/jtrack/oci_key.pem
-tenancy=ocid1.tenancy.oc1..aaaaaaaaydrjm77otncda2xn7qtv7l3hqnd3zxn2u6siwdhniibwfv4wwhta
-region=us-ashburn-1
