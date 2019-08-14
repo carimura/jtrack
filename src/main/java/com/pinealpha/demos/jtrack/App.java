@@ -41,8 +41,6 @@ public class App {
 
   public static void main(String[] args) throws Exception {
     FaceDetect faceDetect = new FaceDetect();
-
-    System.out.println("-------- Starting jtrack --------");
     String query = StringUtils.isEmpty(System.getenv("QUERY")) ? "boom" : System.getenv("QUERY");
     int num = StringUtils.isEmpty(System.getenv("NUM")) ? 3 : Integer.parseInt(System.getenv("NUM"));
     Boolean previewImage = StringUtils.isEmpty(System.getenv("PREVIEW")) ? Boolean.FALSE : Boolean.parseBoolean(System.getenv("PREVIEW"));
@@ -63,8 +61,6 @@ public class App {
       Services.postImageToSlack("demostream", finalGIF);
     }
     Services.postMessageToSlack("demostream", "Finished!");
-
-    System.out.println("--------// Ending jtrack --------");
   }
 
 }
