@@ -54,9 +54,20 @@ docker run -e "QUERY=happy" -e "NUM=3" --env-file=.env <your_docker_name>/jtrack
 * *PREVIEW* [bool] (ie "false") -- If set to true, a 
 smaller image will be pulled from Giphy.
 
- 
 
-## Next Up
+## To Build
 
-1. switch to Jackson. much cleaner serialization of json results.
+### Runtime
+
+You can change the runtime by using jlink as follows:
+
+```
+jlink --no-header-files --no-man-pages --compress=2 --strip-debug \
+--module-path /Users/chad/lib/jdk-14-loom-linux.jdk/jmods \
+--add-modules java.base,java.compiler,java.desktop,java.instrument,java.management,java.naming,java.sql,jdk.attach,jdk.jdi,jdk.unsupported \
+--output java-runtime
+```
+
+## TODO
+
 1. illegal reflective access message for bouncy castle required by OCI stuff
